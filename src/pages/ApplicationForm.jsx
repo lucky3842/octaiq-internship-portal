@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -84,7 +85,7 @@ const ApplicationForm = () => {
       const aiScore = await scoreResume(resumeText, role.description)
 
       // Save application
-      const { data: applicationData, error: applicationError } = await supabase
+      const { error: applicationError } = await supabase
         .from('applications')
         .insert({
           role_id: roleId,
@@ -101,8 +102,6 @@ const ApplicationForm = () => {
           ai_feedback: aiScore.feedback,
           status: 'pending'
         })
-        .select()
-        .single()
 
       if (applicationError) throw applicationError
 

@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { MapPin, Clock, DollarSign, Calendar, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
 const Internships = () => {

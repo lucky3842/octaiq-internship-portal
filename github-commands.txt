@@ -1,0 +1,19 @@
+# GitHub Push Commands
+
+# 1. First, create a new repository on GitHub:
+#    - Go to https://github.com
+#    - Click "New repository"
+#    - Name: octaiq-internship-portal
+#    - Make it public or private
+#    - Don't initialize with README (we already have files)
+
+# 2. Then run these commands in terminal:
+
+cd /Users/mymacbook/Desktop/OctaIQ-portal
+
+# Add your GitHub repository URL (replace YOUR_USERNAME with your GitHub username)
+git remote add origin https://github.com/YOUR_USERNAME/octaiq-internship-portal.git
+
+# Push to GitHub
+git branch -M main
+git push -u origin main

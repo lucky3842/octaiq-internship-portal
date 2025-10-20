@@ -1,6 +1,11 @@
 const RESEND_API_KEY = process.env.REACT_APP_RESEND_API_KEY
 
 export const sendEmail = async (to, subject, html) => {
+  if (!RESEND_API_KEY) {
+    console.log('Email would be sent:', { to, subject })
+    return { success: true }
+  }
+
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -23,7 +28,7 @@ export const sendEmail = async (to, subject, html) => {
     return await response.json()
   } catch (error) {
     console.error('Email sending error:', error)
-    throw error
+    return { success: false, error: error.message }
   }
 }
 

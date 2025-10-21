@@ -121,7 +121,7 @@ const About = () => {
               Ready to start your journey with OctaIQ? We'd love to hear from you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="mailto:careers@octaiq.com" className="btn-primary">
+              <a href="mailto:nagashreeshyl@gmail.com" className="btn-primary">
                 Contact Us
               </a>
               <a href="/internships" className="btn-secondary">

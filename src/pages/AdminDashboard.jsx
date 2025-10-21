@@ -13,7 +13,8 @@ import {
   Star,
   Plus,
   Edit,
-  Trash2
+  Trash2,
+  FileText
 } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
@@ -284,6 +285,21 @@ const AdminDashboard = () => {
     }
   }
 
+  const viewResume = async (resumeUrl) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from('resumes')
+        .createSignedUrl(resumeUrl, 3600) // 1 hour expiry
+
+      if (error) throw error
+
+      window.open(data.signedUrl, '_blank')
+    } catch (error) {
+      console.error('Error viewing resume:', error)
+      toast.error('Failed to open resume')
+    }
+  }
+
   const filteredApplications = applications.filter(app => 
     filterStatus === 'all' || app.status === filterStatus
   )
@@ -486,6 +502,13 @@ const AdminDashboard = () => {
                           <Eye size={16} />
                         </button>
                         <button
+                          onClick={() => viewResume(application.resume_url)}
+                          className="p-2 text-gray-400 hover:text-blue-400 transition-colors"
+                          title="View Resume"
+                        >
+                          <FileText size={16} />
+                        </button>
+                        <button
                           onClick={() => startEditApplication(application)}
                           className="p-2 text-gray-400 hover:text-blue-400 transition-colors"
                           title="Edit Application"
@@ -593,6 +616,19 @@ const AdminDashboard = () => {
                   <label className="text-sm text-gray-400">Motivation</label>
                   <div className="bg-gray-800 p-4 rounded-lg">
                     <p className="text-sm">{selectedApplication.motivation}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-sm text-gray-400">Resume</label>
+                  <div className="bg-gray-800 p-4 rounded-lg">
+                    <button
+                      onClick={() => viewResume(selectedApplication.resume_url)}
+                      className="btn-primary flex items-center"
+                    >
+                      <FileText size={16} className="mr-2" />
+                      View Resume
+                    </button>
                   </div>
                 </div>
 

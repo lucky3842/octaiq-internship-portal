@@ -20,7 +20,10 @@ const applicationSchema = z.object({
   year: z.string().min(1, 'Year is required'),
   cgpa: z.string().min(1, 'CGPA is required'),
   motivation: z.string().min(50, 'Please write at least 50 characters'),
-  resume: z.any().refine((files) => files?.length > 0, 'Resume is required')
+  resume: z.any()
+    .refine((files) => files?.length > 0, 'Resume is required')
+    .refine((files) => files?.[0]?.type === 'application/pdf', 'Only PDF files are allowed')
+    .refine((files) => files?.[0]?.size <= 5 * 1024 * 1024, 'File size must be less than 5MB')
 })
 
 const ApplicationForm = () => {
@@ -273,11 +276,11 @@ const ApplicationForm = () => {
                   <input
                     {...register('resume')}
                     type="file"
-                    accept=".pdf,.doc,.docx"
+                    accept=".pdf"
                     className="hidden"
                   />
                 </label>
-                <p className="text-gray-400 text-sm mt-2">PDF, DOC, or DOCX (Max 5MB)</p>
+                <p className="text-gray-400 text-sm mt-2">PDF only (Max 5MB)</p>
                 {resumeFile && resumeFile[0] && (
                   <div className="mt-4 flex items-center justify-center text-accent">
                     <FileText size={20} className="mr-2" />

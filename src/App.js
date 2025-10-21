@@ -4,6 +4,7 @@ import { supabase } from './lib/supabase'
 import Header from './components/Header'
 import Chatbot from './components/Chatbot'
 import Home from './pages/Home'
+import About from './pages/About'
 import Internships from './pages/Internships'
 import ApplicationForm from './pages/ApplicationForm'
 import AdminLogin from './pages/AdminLogin'
@@ -59,6 +60,7 @@ function App() {
         
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/internships" element={<Internships />} />
           <Route path="/internships/:roleId/apply" element={<ApplicationForm />} />
           <Route path="/admin/login" element={<AdminLogin />} />

@@ -86,14 +86,12 @@ const Home = () => {
               Browse Internships
               <ArrowRight className="ml-2" size={20} />
             </Link>
-            <a
-              href="https://octaiq.com"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/about"
               className="btn-secondary inline-flex items-center"
             >
               Learn About OctaIQ
-            </a>
+            </Link>
           </motion.div>
         </div>
 

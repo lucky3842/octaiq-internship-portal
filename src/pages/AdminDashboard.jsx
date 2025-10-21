@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
@@ -19,6 +18,8 @@ import {
 import toast, { Toaster } from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
 import { sendStatusUpdate } from '../services/emailService'
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 const AdminDashboard = () => {
   const [applications, setApplications] = useState([])
@@ -300,6 +301,51 @@ const AdminDashboard = () => {
     }
   }
 
+  const exportData = () => {
+    try {
+      if (filteredApplications.length === 0) {
+        toast.error('No data to export')
+        return
+      }
+
+      const doc = new jsPDF('l', 'mm', 'a4') // landscape orientation
+      
+      doc.setFontSize(16)
+      doc.text('Internship Applications Report', 14, 15)
+      doc.setFontSize(10)
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 25)
+
+      const tableData = filteredApplications.map(app => [
+        app.full_name || '',
+        app.email || '',
+        app.phone || '',
+        app.university || '',
+        app.course || '',
+        app.year || '',
+        app.cgpa || '',
+        app.internship_roles?.title || '',
+        app.status || '',
+        app.ai_score || '',
+        app.created_at ? new Date(app.created_at).toLocaleDateString() : ''
+      ])
+
+      doc.autoTable({
+        head: [['Name', 'Email', 'Phone', 'University', 'Course', 'Year', 'CGPA', 'Role', 'Status', 'AI Score', 'Applied']],
+        body: tableData,
+        startY: 35,
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [255, 193, 7] }, // yellow header
+        alternateRowStyles: { fillColor: [245, 245, 245] }
+      })
+
+      doc.save(`applications_${new Date().toISOString().split('T')[0]}.pdf`)
+      toast.success('PDF exported successfully')
+    } catch (error) {
+      console.error('Export error:', error)
+      toast.error('Failed to export PDF')
+    }
+  }
+
   const filteredApplications = applications.filter(app => 
     filterStatus === 'all' || app.status === filterStatus
   )
@@ -431,7 +477,10 @@ const AdminDashboard = () => {
               <Briefcase size={16} className="mr-2" />
               Manage Roles
             </button>
-            <button className="btn-secondary flex items-center">
+            <button 
+              onClick={exportData}
+              className="btn-secondary flex items-center"
+            >
               <Download size={16} className="mr-2" />
               Export Data
             </button>

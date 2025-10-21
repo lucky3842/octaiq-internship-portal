@@ -7,6 +7,8 @@
     "@supabase/supabase-js": "^2.39.0",
     "ajv": "^8.17.1",
     "framer-motion": "^10.16.0",
+    "jspdf": "^3.0.3",
+    "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.294.0",
     "openai": "^4.20.0",
     "react": "^18.2.0",

@@ -19,7 +19,6 @@ import toast, { Toaster } from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
 import { sendStatusUpdate } from '../services/emailService'
 import jsPDF from 'jspdf'
-import 'jspdf-autotable'
 
 const AdminDashboard = () => {
   const [applications, setApplications] = useState([])
@@ -308,41 +307,38 @@ const AdminDashboard = () => {
         return
       }
 
-      const doc = new jsPDF('l', 'mm', 'a4') // landscape orientation
-      
-      doc.setFontSize(16)
-      doc.text('Internship Applications Report', 14, 15)
-      doc.setFontSize(10)
-      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 25)
+      // Fallback to CSV export
+      const csvData = filteredApplications.map(app => ({
+        'Name': app.full_name || '',
+        'Email': app.email || '',
+        'Phone': app.phone || '',
+        'University': app.university || '',
+        'Course': app.course || '',
+        'Year': app.year || '',
+        'CGPA': app.cgpa || '',
+        'Role': app.internship_roles?.title || '',
+        'Status': app.status || '',
+        'AI Score': app.ai_score || '',
+        'Applied': app.created_at ? new Date(app.created_at).toLocaleDateString() : ''
+      }))
 
-      const tableData = filteredApplications.map(app => [
-        app.full_name || '',
-        app.email || '',
-        app.phone || '',
-        app.university || '',
-        app.course || '',
-        app.year || '',
-        app.cgpa || '',
-        app.internship_roles?.title || '',
-        app.status || '',
-        app.ai_score || '',
-        app.created_at ? new Date(app.created_at).toLocaleDateString() : ''
-      ])
+      const headers = Object.keys(csvData[0]).join(',')
+      const rows = csvData.map(row => 
+        Object.values(row).map(val => `"${String(val).replace(/"/g, '""')}"`).join(',')
+      )
+      const csvContent = [headers, ...rows].join('\n')
 
-      doc.autoTable({
-        head: [['Name', 'Email', 'Phone', 'University', 'Course', 'Year', 'CGPA', 'Role', 'Status', 'AI Score', 'Applied']],
-        body: tableData,
-        startY: 35,
-        styles: { fontSize: 8 },
-        headStyles: { fillColor: [255, 193, 7] }, // yellow header
-        alternateRowStyles: { fillColor: [245, 245, 245] }
-      })
-
-      doc.save(`applications_${new Date().toISOString().split('T')[0]}.pdf`)
-      toast.success('PDF exported successfully')
+      const blob = new Blob([csvContent], { type: 'text/csv' })
+      const link = document.createElement('a')
+      const url = URL.createObjectURL(blob)
+      link.href = url
+      link.download = `applications_${new Date().toISOString().split('T')[0]}.csv`
+      link.click()
+      URL.revokeObjectURL(url)
+      toast.success('Data exported as CSV')
     } catch (error) {
       console.error('Export error:', error)
-      toast.error('Failed to export PDF')
+      toast.error('Failed to export data')
     }
   }
 

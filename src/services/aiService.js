@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 export const scoreResume = async (resumeText, jobDescription) => {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "openai/gpt-oss-20b",
       messages: [
         {
           role: "system",
@@ -51,7 +51,7 @@ export const getChatbotResponse = async (message, context = '') => {
     }
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "openai/gpt-oss-20b",
       messages: [
         {
           role: "system",
